@@ -86,46 +86,70 @@ public class Parking
         int minutosEntrada = entrada % 100;
         int horasSalida = salida / 100;
         int minutosSalida = salida % 100; 
+
+        int tarifaTemprana = 15;
+        int tarifaRegular = (2 + (((salida - entrada) / 50) * 5 ));
+        int tresHoras = 5;
+        int mediasHoras = (5 + ((((salida - entrada) - 300) / 50) * 3));
+
         String s1 = ":";
         String s2 = horasEntrada + s1 + minutosEntrada;
         String s3 = horasSalida + s1 + minutosSalida;
-        String minutosParaEntrar;
+
         cliente++;
         switch (tipoTarifa){
-            case 'R': if (entrada >= HORA_INICIO_ENTRADA_TEMPRANA && 
-            entrada < HORA_FIN_ENTRADA_TEMPRANA && 
-            salida >= HORA_INICIO_SALIDA_TEMPRANA &&
-            salida < HORA_FIN_SALIDA_TEMPRANA){
+            case 'R': if (entrada >= 600 && entrada < 830 && salida >= 1500 && salida < 1800){
                 System.out.println("***************************************");
                 System.out.println("Cliente nº: " + cliente);
                 System.out.println("Hora entrada: " + s2);
                 System.out.println("Hora salida: " + s3);
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
-                System.out.println("Importe a pagar: " + "€");
+                System.out.println("Importe a pagar: " + tarifaTemprana + "€");
                 System.out.println("***************************************");
+                regular++;
             }
-            else if (entrada < HORA_INICIO_ENTRADA_TEMPRANA &&
-            entrada >= HORA_FIN_ENTRADA_TEMPRANA &&
-            salida >= HORA_INICIO_SALIDA_TEMPRANA &&
-            salida < HORA_FIN_SALIDA_TEMPRANA){
+            else if (entrada < 600 || entrada >= 830 && salida < 1500 || salida >= 1800){
                 System.out.println("***************************************");
                 System.out.println("Cliente nº: " + cliente);
                 System.out.println("Hora entrada: " + s2);
                 System.out.println("Hora salida: " + s3);
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
-                System.out.println("Importe a pagar: " + "€");
-                System.out.println("***************************************");  
+                System.out.println("Importe a pagar: " + tarifaRegular + "€");
+                System.out.println("***************************************"); 
+                regular++;
             } 
             break;
-            case 'C': if ((salida - entrada) <= 100){
+            case 'C': if ((salida - entrada) <= 300){
                 System.out.println("***************************************");
                 System.out.println("Cliente nº: " + cliente);
                 System.out.println("Hora entrada: " + s2);
                 System.out.println("Hora salida: " + s3);
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
-                System.out.println("Importe a pagar: " + "€");
+                System.out.println("Importe a pagar: " + tresHoras + "€");
                 System.out.println("***************************************");
+                comercial++;
             }
+            else if ((salida - entrada) > 300){
+                System.out.println("***************************************");
+                System.out.println("Cliente nº: " + cliente);
+                System.out.println("Hora entrada: " + s2);
+                System.out.println("Hora salida: " + s3);
+                System.out.println("Tarifa a aplicar: " + tipoTarifa);
+                System.out.println("Importe a pagar: " + mediasHoras + "€");
+                System.out.println("***************************************");
+                comercial++;
+            }
+            if (comercial == 1) {
+                clienteMaximoComercial = cliente;
+                importeMaximoComercial = mediasHoras;
+            }
+            else {
+                if (importeMaximoComercial < mediasHoras) {
+                    clienteMaximoComercial = cliente;
+                    importeMaximoComercial = mediasHoras;
+                }
+            }
+            break;
         }
     }
 
@@ -136,7 +160,12 @@ public class Parking
      *  
      */
     public void printEstadísticas() {
-
+        System.out.println("***********************************************");
+        System.out.println("Importe total entre todos los clientes: " + importeTotal);
+        System.out.println("Nº clientes tarifa regular: " + regular);
+        System.out.println("Nº clientes tarifa comercial: " + comercial);
+        System.out.println("Cliente tarifa comerical con factura máxima fue el " + clienteMaximoComercial + " y pagó " + importeMaximoComercial);
+        System.out.println("***********************************************");
     }
 
     /**
