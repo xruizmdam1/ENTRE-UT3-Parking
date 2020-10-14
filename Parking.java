@@ -7,9 +7,11 @@
  * tarifa más económica
  * (leer enunciado)
  * 
+ * @author Xabier Ruiz Melero
  */
 public class Parking
 {
+    // Declaración de constantes // 
     private final char REGULAR = 'R';
     private final char COMERCIAL = 'C';
     private final double PRECIO_BASE_REGULAR = 2.0;
@@ -36,7 +38,7 @@ public class Parking
      * Inicializa el parking con el nombre indicada por el parámetro.
      * El resto de atributos se inicializan a 0 
      */
-    public Parking(String queNombre) {
+    public Parking(String queNombre) { // Constructor con valor "nombre" modificable y los demas valores a 0
         nombre = queNombre;
         cliente = 0;
         importeTotal = 0;
@@ -53,7 +55,7 @@ public class Parking
      * accesor para el nombre del parking
      *  
      */
-    public String getNombre() {
+    public String getNombre() { // Accesor
         return nombre;
     }
 
@@ -61,7 +63,7 @@ public class Parking
      * mutador para el nombre del parking
      *  
      */
-    public void setNombre(String nuevoNombre) {
+    public void setNombre(String nuevoNombre) { // Mutador
         nombre = nuevoNombre;
     }
 
@@ -82,23 +84,44 @@ public class Parking
      *    (leer enunciado del ejercicio)
      */
     public void facturarCliente(char tipoTarifa, int entrada, int salida, int dia) {
-        int horasEntrada = entrada / 100;
-        int minutosEntrada = entrada % 100;
-        int horasSalida = salida / 100;
-        int minutosSalida = salida % 100; 
+        int horasEntrada = entrada / 100; // Cálculo de las horas de entrada
+        int minutosEntrada = entrada % 100; // Cálculo de los minutos de entrada
+        int horasSalida = salida / 100; // Cálculo de las horas de salida
+        int minutosSalida = salida % 100; // Cálculo de los minutos de salida 
 
-        int tarifaTemprana = 15;
-        int tarifaRegular = (2 + (((salida - entrada) / 50) * 5 ));
-        int tresHoras = 5;
-        int mediasHoras = (5 + ((((salida - entrada) - 300) / 50) * 3));
+        String minutoCero = "0";
+        String minutosEntradaConCero = minutoCero + minutosEntrada;
+        String minutosSalidaConCero = minutoCero + minutosSalida;
 
-        String s1 = ":";
-        String s2 = horasEntrada + s1 + minutosEntrada;
-        String s3 = horasSalida + s1 + minutosSalida;
+        int tarifaTemprana = 15; // Se le aplica un valor por defecto a tarifaTemprana
+        double tarifaRegular = (PRECIO_BASE_REGULAR + (((salida - entrada) / 50) * 5 )); // Se le aplica un valor por defecto a tarifaRegular
+        int tresHoras = 5; // Se le aplica un valor por defecto a tresHoras
+        int mediasHoras = (5 + ((((salida - entrada) - 300) / 50) * 3)); // Se le aplica un valor por defecto a mediasHoras
+
+        double importe;
+        importe = tarifaTemprana + tarifaRegular + tresHoras + mediasHoras;
+        importeTotal = importe;
+
+        String s1 = ":"; // Declaración de una variable local de tipo String y se define por los dos puntos de la hora
+        String s2 = ""; // Declaración de una variable local de tipo String y se define la entrada completa
+        String s3 = ""; // Declaración de una variable local de tipo String y se define la salida completa
+
+        if (minutosEntrada < 10) { // Si los minutos son menores a 10, se añadirá un 0 al principio.
+            s2 = horasEntrada + s1 + minutosEntradaConCero;}
+        else {
+            s2 = horasEntrada + s1 + minutosEntrada;
+        }
+
+        if (minutosSalida < 10) { // Si los minutos son menores a 10, se añadirá un 0 al principio.
+            s3 = horasSalida + s1 + minutosSalidaConCero;}
+        else {
+            s3 = horasSalida + s1 + minutosSalida; 
+        }
 
         cliente++;
-        switch (tipoTarifa){
-            case 'R': if (entrada >= 600 && entrada < 830 && salida >= 1500 && salida < 1800){
+
+        switch (tipoTarifa){ // System.out.println se repite ya que los valores de "importe a pagar" no son los mismos.
+            case 'R': if (entrada >= HORA_INICIO_ENTRADA_TEMPRANA || entrada < HORA_FIN_ENTRADA_TEMPRANA && salida >= HORA_INICIO_SALIDA_TEMPRANA || salida < HORA_FIN_SALIDA_TEMPRANA){ // En el caso de R... (Tarifa Regular)
                 System.out.println("***************************************");
                 System.out.println("Cliente nº: " + cliente);
                 System.out.println("Hora entrada: " + s2);
@@ -106,9 +129,10 @@ public class Parking
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
                 System.out.println("Importe a pagar: " + tarifaTemprana + "€");
                 System.out.println("***************************************");
+
                 regular++;
             }
-            else if (entrada < 600 || entrada >= 830 && salida < 1500 || salida >= 1800){
+            else if (entrada < HORA_INICIO_ENTRADA_TEMPRANA || entrada >= HORA_FIN_ENTRADA_TEMPRANA && salida < HORA_INICIO_SALIDA_TEMPRANA || salida >= HORA_FIN_SALIDA_TEMPRANA){ 
                 System.out.println("***************************************");
                 System.out.println("Cliente nº: " + cliente);
                 System.out.println("Hora entrada: " + s2);
@@ -116,10 +140,11 @@ public class Parking
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
                 System.out.println("Importe a pagar: " + tarifaRegular + "€");
                 System.out.println("***************************************"); 
+
                 regular++;
             } 
             break;
-            case 'C': if ((salida - entrada) <= 300){
+            case 'C': if ((salida - entrada) <= 300){ // En el caso de C... (Tarifa Comercial)
                 System.out.println("***************************************");
                 System.out.println("Cliente nº: " + cliente);
                 System.out.println("Hora entrada: " + s2);
@@ -127,6 +152,7 @@ public class Parking
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
                 System.out.println("Importe a pagar: " + tresHoras + "€");
                 System.out.println("***************************************");
+
                 comercial++;
             }
             else if ((salida - entrada) > 300){
@@ -137,9 +163,10 @@ public class Parking
                 System.out.println("Tarifa a aplicar: " + tipoTarifa);
                 System.out.println("Importe a pagar: " + mediasHoras + "€");
                 System.out.println("***************************************");
+
                 comercial++;
             }
-            if (comercial == 1) {
+            if (comercial == 1) { // Incremento de las variables (clienteMaximoComercial e importeMaximoComercial)
                 clienteMaximoComercial = cliente;
                 importeMaximoComercial = mediasHoras;
             }
@@ -159,7 +186,7 @@ public class Parking
      * (leer enunciado)
      *  
      */
-    public void printEstadísticas() {
+    public void printEstadísticas() { // Impresión de las estadísticas recogidas por el programa
         System.out.println("***********************************************");
         System.out.println("Importe total entre todos los clientes: " + importeTotal);
         System.out.println("Nº clientes tarifa regular: " + regular);
@@ -172,7 +199,7 @@ public class Parking
      *  Calcula y devuelve un String que representa el nombre del día
      *  en el que más clientes han utilizado el parking - "SÁBADO"   "DOMINGO" o  "LUNES"
      */
-    public String diaMayorNumeroClientes() {
+    public String diaMayorNumeroClientes() { // Se representa con un String, el día que mas clientes ha tenido el parking, 
         if (clientesSabado > clientesLunes && clientesSabado > clientesDomingo){
             return "SABADO";}
         else if (clientesDomingo > clientesLunes){
